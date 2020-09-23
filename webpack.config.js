@@ -6,6 +6,21 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const isProduction = process.env.NODE_ENV === "production";
 const filename = ext => isProduction ? `bundle.[hash].${ext}` : `bundle.${ext}`;
+const jsLoaders = () => {
+    const loaders = [
+        {
+            loader: "babel-loader",
+            options: {
+                presets: ["@babel/preset-env"],
+            },
+        },
+    ];
+
+    if (!isProduction) {
+        loaders.push("eslint-loader");
+    }
+    return loaders;
+};
 
 module.exports = {
     context: path.resolve(__dirname, "src"),
@@ -34,7 +49,7 @@ module.exports = {
             minify: {
                 collapseWhitespace: isProduction,
                 removeComments: isProduction,
-            }
+            },
         }),
         new CopyPlugin({
             patterns: [
@@ -50,7 +65,13 @@ module.exports = {
             {
                 test: /\.s[ac]ss$/i,
                 use: [
-                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            hmr: !isProduction,
+                            reloadAll: true,
+                        },
+                    },
                     "css-loader",
                     "sass-loader",
                 ],
@@ -58,13 +79,8 @@ module.exports = {
             {
                 test: /\.m?js$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: "babel-loader",
-                    options: {
-                        presets: ["@babel/preset-env"]
-                    }
-                }
-            }
+                use: jsLoaders(),
+            },
         ],
     },
 };

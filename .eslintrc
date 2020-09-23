@@ -1,0 +1,17 @@
+{
+  "parser": "babel-eslint",
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "extends": ["eslint:recommended", "google"],
+  "rules": {
+    "quotes": [2, "double", { "avoidEscape": true }],
+    "object-curly-spacing": ["error", "always"],
+    "indent": ["error", 4],
+    "max-len": ["error", { "code":  120 }],
+    "arrow-parens": ["error", "as-needed"],
+    "require-jsdoc": "off"
+  }
+}
