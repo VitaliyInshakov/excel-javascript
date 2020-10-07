@@ -8,7 +8,7 @@ function createRow(index, content) {
         <div class="row" data-type="resizable">
             <div class="row-info">
                 ${index || ""}
-                ${index ? '<div class="row-resize" data-resize="row"></div>' : ""}
+                ${index ? '<div class="row-resize" data-resize="row"/>' : ""}
             </div>
             <div class="row-data">${content}</div>
         </div>
@@ -19,15 +19,22 @@ function createColumn(column, index) {
     return `
         <div class="column" data-type="resizable" data-col="${index}">
             ${column}
-            <div class="col-resize" data-resize="col"></div>
+            <div class="col-resize" data-resize="col"/>
         </div>
     `;
 }
 
-function createCell(_, col) {
-    return `
-        <div class="cell" contenteditable data-col="${col}"></div>
-    `;
+function createCell(row) {
+    return function(_, col) {
+        return `
+            <div
+                class="cell"
+                contenteditable
+                data-col="${col}"
+                data-id="${row}:${col}"
+            />
+        `;
+    };
 }
 
 function toChar(_, index) {
@@ -45,9 +52,9 @@ export function createTable(rowsCount = 15) {
 
     rows.push(createRow(null, columns));
 
-    for (let i = 0; i < rowsCount; i++) {
-        const cells = new Array(colsCount).fill("").map(createCell).join("");
-        rows.push(createRow(i + 1, cells));
+    for (let row = 0; row < rowsCount; row++) {
+        const cells = new Array(colsCount).fill("").map(createCell(row)).join("");
+        rows.push(createRow(row + 1, cells));
     }
 
     return rows.join("");
