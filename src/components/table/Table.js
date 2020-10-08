@@ -11,7 +11,7 @@ export class Table extends ExcelComponent {
     constructor($root) {
         super($root, {
             name: "Table",
-            listeners: ["mousedown"],
+            listeners: ["mousedown", "keydown"],
         });
     }
 
@@ -43,6 +43,19 @@ export class Table extends ExcelComponent {
             } else {
                 this.selection.select($target);
             }
+        }
+    }
+
+    onKeydown(event) {
+        const { key, shiftKey } = event;
+        const keys = ["Enter", "Tab", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+
+        if (keys.includes(key) && !shiftKey) {
+            event.preventDefault();
+
+            const id = this.selection.current.id(true);
+            const $next = this.$root.find(nextSelector(key, id));
+            this.selection.select($next);
         }
     }
 }
