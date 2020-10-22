@@ -1,3 +1,6 @@
+import { toInlineStyles } from "@core/utils";
+import { defaultStyles } from "@/constants";
+
 const CODES = {
     A: 65,
     Z: 90,
@@ -13,7 +16,7 @@ function createRow(index, content, state = {}) {
         <div class="row" data-type="resizable" data-row="${index}" style="height: ${height}">
             <div class="row-info">
                 ${index || ""}
-                ${index ? '<div class="row-resize" data-resize="row"/>' : ""}
+                ${index ? '<div class="row-resize" data-resize="row"></div>' : ""}
             </div>
             <div class="row-data">${content}</div>
         </div>
@@ -24,7 +27,7 @@ function createColumn({ column, index, width }) {
     return `
         <div class="column" data-type="resizable" data-col="${index}" style="width: ${width}">
             ${column}
-            <div class="col-resize" data-resize="col"/>
+            <div class="col-resize" data-resize="col"></div>
         </div>
     `;
 }
@@ -32,7 +35,8 @@ function createColumn({ column, index, width }) {
 function createCell(state, row) {
     return function(_, col) {
         const id = `${row}:${col}`;
-        const data = state.cellState[id] || "";
+        const data = state.cellState[id];
+        const styles = toInlineStyles({ ...state.stylesState[id], ...defaultStyles });
 
         return `
             <div
@@ -41,8 +45,8 @@ function createCell(state, row) {
                 data-col="${col}"
                 data-id="${id}"
                 data-type="cell"
-                style="width: ${getWidth(state.colState, col)}"
-            >${data}</div>
+                style="${styles}; width: ${getWidth(state.colState, col)}"
+            >${data || ""}</div>
         `;
     };
 }
@@ -60,9 +64,9 @@ function getHeight(state, index) {
 }
 
 function withWidthFromState(state) {
-    return function(col, index) {
+    return function(column, index) {
         return {
-            col, index, width: getWidth(state.colState, index),
+            column, index, width: getWidth(state.colState, index),
         };
     };
 }
