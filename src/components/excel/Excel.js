@@ -1,10 +1,10 @@
 import { $ } from "@core/dom";
 import { Emitter } from "@core/Emitter";
 import { StoreSubscriber } from "@core/StoreSubscriber";
+import { updateOpenDate } from "@/store/actions";
 
 export class Excel {
-    constructor(selector, options) {
-        this.$el = $(selector);
+    constructor(options) {
         this.components = options.components || [];
         this.store = options.store;
         this.emitter = new Emitter();
@@ -28,8 +28,11 @@ export class Excel {
         return $root;
     }
 
-    render() {
-        this.$el.append(this.getRoot());
+    init() {
+        if (process.env.NODE_ENV === "production") {
+            document.addEventListener("contextmenu", event => event.preventDefault());
+        }
+        this.store.dispatch(updateOpenDate());
         this.subscriber.subscribeComponents(this.components);
         this.components.forEach(component => component.init());
     }
@@ -37,5 +40,6 @@ export class Excel {
     destroy() {
         this.components.forEach(component => component.destroy());
         this.subscriber.unsubscribeFromStore();
+        document.removeEventListener("contextmenu", event => event.preventDefault());
     }
 }
