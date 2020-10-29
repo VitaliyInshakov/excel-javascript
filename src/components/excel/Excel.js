@@ -29,6 +29,9 @@ export class Excel {
     }
 
     init() {
+        if (process.env.NODE_ENV === "production") {
+            document.addEventListener("contextmenu", event => event.preventDefault());
+        }
         this.store.dispatch(updateOpenDate());
         this.subscriber.subscribeComponents(this.components);
         this.components.forEach(component => component.init());
@@ -37,5 +40,6 @@ export class Excel {
     destroy() {
         this.components.forEach(component => component.destroy());
         this.subscriber.unsubscribeFromStore();
+        document.removeEventListener("contextmenu", event => event.preventDefault());
     }
 }
