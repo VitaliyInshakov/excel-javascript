@@ -6,7 +6,9 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --open",
     "build": "cross-env NODE_ENV=production webpack --mode production",
-    "lint": "npx eslint ./src"
+    "lint": "npx eslint ./src",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -37,7 +39,9 @@
     "eslint": "^7.9.0",
     "eslint-config-google": "^0.14.0",
     "eslint-loader": "^4.0.2",
+    "eslint-plugin-jest": "^24.1.0",
     "html-webpack-plugin": "^4.5.0",
+    "jest": "^26.6.1",
     "mini-css-extract-plugin": "^0.11.2",
     "node-sass": "^4.14.1",
     "sass-loader": "^10.0.2",
